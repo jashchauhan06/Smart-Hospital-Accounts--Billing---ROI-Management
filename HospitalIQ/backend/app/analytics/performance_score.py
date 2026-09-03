@@ -43,7 +43,7 @@ BENCHMARKS = {
 }
 
 
-def compute_performance_score(db: Session, department_id: int = None) -> dict:
+def compute_performance_score(db: Session, department_id: int = None, months: int = 3) -> dict:
     """
     Compute the Hospital Performance Score (0-100).
     Returns total score, grade, and component breakdown.
@@ -55,8 +55,8 @@ def compute_performance_score(db: Session, department_id: int = None) -> dict:
     if not latest_fin:
         return {"total_score": 0, "grade": "N/A", "components": []}
 
-    # Recent period (3 months)
-    period = timedelta(days=90)
+    # Selected period (e.g. 1 month, 3 months, 6 months, 12 months)
+    period = timedelta(days=months * 30)
 
     # --- Financial Health Score ---
     fin_q = db.query(

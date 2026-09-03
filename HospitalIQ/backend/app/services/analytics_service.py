@@ -21,28 +21,28 @@ from app.analytics.clinical_analytics import (
 )
 
 
-def get_dashboard_summary(db: Session, department_id: int = None):
-    """Compute complete dashboard summary with all KPIs."""
+def get_dashboard_summary(db: Session, department_id: int = None, months: int = 3):
+    """Compute complete dashboard summary with all KPIs for the specified time period."""
     # Financial KPIs
-    fin_summary = get_financial_summary(db, department_id=department_id)
+    fin_summary = get_financial_summary(db, department_id=department_id, months=months)
 
     # Operational KPIs
-    ops_summary = get_operational_summary(db, department_id=department_id)
+    ops_summary = get_operational_summary(db, department_id=department_id, months=months)
 
     # Performance Score
-    perf_score = compute_performance_score(db, department_id=department_id)
+    perf_score = compute_performance_score(db, department_id=department_id, months=months)
 
-    # Total patients (current month)
-    today = date.today()
-    current_month_start = today.replace(day=1)
-    prev_month_start = (current_month_start - timedelta(days=1)).replace(day=1)
+    # Total patients (for the selected period)
+    latest_pt = db.query(func.max(Patient.admission_date)).scalar() or date.today()
+    period_start = latest_pt - timedelta(days=months * 30)
+    prev_period_start = period_start - timedelta(days=months * 30)
 
     current_patients = db.query(func.count(Patient.id)).filter(
-        Patient.admission_date >= current_month_start
+        Patient.admission_date >= period_start
     )
     prev_patients = db.query(func.count(Patient.id)).filter(
-        Patient.admission_date >= prev_month_start,
-        Patient.admission_date < current_month_start
+        Patient.admission_date >= prev_period_start,
+        Patient.admission_date < period_start
     )
 
     if department_id:

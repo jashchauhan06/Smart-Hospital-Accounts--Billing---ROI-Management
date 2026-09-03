@@ -2,12 +2,19 @@ import { useState, useEffect } from 'react';
 import { dashboardAPI, insightsAPI } from '../services/api';
 import {
   TrendingUp, TrendingDown, Minus, AlertTriangle, Lightbulb,
-  IndianRupee, Users, Bed, Clock, Activity, PieChart
+  IndianRupee, Users, Bed, Clock, Activity, PieChart, Calendar
 } from 'lucide-react';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar, RadialBarChart, RadialBar, Legend, PolarAngleAxis
 } from 'recharts';
+
+const PERIOD_OPTIONS = [
+  { value: 1, label: '1 Month', badge: 'Last 30 Days' },
+  { value: 3, label: '3 Months', badge: 'Quarterly' },
+  { value: 6, label: '6 Months', badge: 'Half-Year' },
+  { value: 12, label: '1 Year', badge: 'Annual' },
+];
 
 const kpiIcons = {
   'Total Revenue': IndianRupee,
@@ -30,17 +37,35 @@ export default function Dashboard() {
   const [data, setData] = useState(null);
   const [insights, setInsights] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [selectedPeriod, setSelectedPeriod] = useState(3);
+  const [periodLoading, setPeriodLoading] = useState(false);
 
-  useEffect(() => {
+  const fetchDashboardData = (months, isInitial = false) => {
+    if (isInitial) setLoading(true);
+    else setPeriodLoading(true);
+
     Promise.all([
-      dashboardAPI.summary(),
-      insightsAPI.dashboard().catch(() => ({ data: [] })),
+      dashboardAPI.summary({ months }),
+      isInitial ? insightsAPI.dashboard().catch(() => ({ data: [] })) : Promise.resolve(null),
     ]).then(([dashRes, insRes]) => {
       setData(dashRes.data);
-      setInsights(insRes.data);
+      if (insRes) setInsights(insRes.data);
     }).catch(console.error)
-      .finally(() => setLoading(false));
+      .finally(() => {
+        setLoading(false);
+        setPeriodLoading(false);
+      });
+  };
+
+  useEffect(() => {
+    fetchDashboardData(selectedPeriod, true);
   }, []);
+
+  const handlePeriodChange = (months) => {
+    if (months === selectedPeriod || periodLoading) return;
+    setSelectedPeriod(months);
+    fetchDashboardData(months, false);
+  };
 
   if (loading) return <LoadingState />;
   if (!data) return <ErrorState />;
@@ -50,15 +75,55 @@ export default function Dashboard() {
   return (
     <div className="page-container">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-surface-100">Executive Dashboard</h1>
           <p className="text-sm text-surface-500 mt-1">Hospital performance overview & key metrics</p>
         </div>
+
+        {/* Time Period Filter Pill Buttons */}
+        <div className="flex items-center gap-1.5 self-start sm:self-auto bg-surface-900/90 border border-surface-700/60 p-1.5 rounded-xl shadow-sm backdrop-blur-sm">
+          <div className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-surface-400">
+            <Calendar className="w-3.5 h-3.5 text-primary-400" />
+            <span className="font-semibold text-surface-300">Period:</span>
+          </div>
+          <div className="flex items-center gap-1 bg-surface-950/60 p-0.5 rounded-lg border border-surface-800">
+            {PERIOD_OPTIONS.map((opt) => (
+              <button
+                key={opt.value}
+                onClick={() => handlePeriodChange(opt.value)}
+                disabled={periodLoading}
+                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 cursor-pointer ${
+                  selectedPeriod === opt.value
+                    ? 'bg-primary-600 text-white shadow-sm shadow-primary-600/40'
+                    : 'text-surface-400 hover:text-surface-200 hover:bg-surface-800/80'
+                }`}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* Cards Section Meta Info */}
+      <div className="flex items-center justify-between text-xs text-surface-400 -mb-2 px-0.5">
+        <div className="flex items-center gap-2">
+          <span className="font-medium text-surface-300">Performance & KPI Cards</span>
+          <span className="px-2 py-0.5 rounded-full bg-primary-950/70 border border-primary-800/40 text-primary-400 text-[11px] font-medium">
+            {PERIOD_OPTIONS.find(p => p.value === selectedPeriod)?.badge} ({PERIOD_OPTIONS.find(p => p.value === selectedPeriod)?.label})
+          </span>
+        </div>
+        {periodLoading && (
+          <span className="flex items-center gap-1.5 text-primary-400 font-medium animate-pulse">
+            <span className="w-1.5 h-1.5 rounded-full bg-primary-400" />
+            Recalculating metrics...
+          </span>
+        )}
       </div>
 
       {/* Performance Score + KPI Grid */}
-      <div className="grid grid-cols-12 gap-5">
+      <div className={`grid grid-cols-12 gap-5 transition-opacity duration-200 ${periodLoading ? 'opacity-60 pointer-events-none' : 'opacity-100'}`}>
         {/* Performance Score */}
         <div className="col-span-12 lg:col-span-3">
           <div className="kpi-card h-full flex flex-col items-center justify-center py-6">

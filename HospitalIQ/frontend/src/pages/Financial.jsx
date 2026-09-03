@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { financialAPI } from '../services/api';
-import { DollarSign, TrendingUp, TrendingDown } from 'lucide-react';
+import { DollarSign, TrendingUp, TrendingDown, Calendar } from 'lucide-react';
 import FluidDropdown from '../components/FluidDropdown';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
@@ -8,6 +8,13 @@ import {
 } from 'recharts';
 
 const COLORS = ['#6366f1', '#22c55e', '#f59e0b', '#f43f5e', '#8b5cf6', '#06b6d4', '#ec4899', '#14b8a6'];
+const PERIOD_OPTIONS = [
+  { value: 1, label: '1 Month' },
+  { value: 3, label: '3 Months' },
+  { value: 6, label: '6 Months' },
+  { value: 12, label: '1 Year' },
+];
+
 const formatINR = (v) => {
   if (Math.abs(v) >= 10000000) return `₹${(v/10000000).toFixed(2)} Cr`;
   if (Math.abs(v) >= 100000) return `₹${(v/100000).toFixed(1)} L`;
@@ -20,11 +27,15 @@ export default function Financial() {
   const [departments, setDepartments] = useState([]);
   const [categories, setCategories] = useState([]);
   const [selectedDept, setSelectedDept] = useState('');
+  const [selectedPeriod, setSelectedPeriod] = useState(3);
   const [loading, setLoading] = useState(true);
 
-  const fetchData = (deptId) => {
+  const fetchData = (deptId = selectedDept, months = selectedPeriod) => {
     setLoading(true);
-    const params = deptId ? { department_id: deptId } : {};
+    const params = {
+      ...(deptId ? { department_id: deptId } : {}),
+      months,
+    };
     Promise.all([
       financialAPI.summary(params),
       financialAPI.trends(params),
@@ -40,12 +51,6 @@ export default function Financial() {
 
   useEffect(() => { fetchData(); }, []);
 
-  const handleDeptChange = (e) => {
-    const val = e.target.value;
-    setSelectedDept(val);
-    fetchData(val || undefined);
-  };
-
   if (loading && !summary) return <div className="page-container"><div className="animate-pulse h-96 bg-surface-900 rounded-xl" /></div>;
 
   return (
@@ -55,16 +60,49 @@ export default function Financial() {
           <h1 className="text-2xl font-bold text-surface-100">Financial Analytics</h1>
           <p className="text-sm text-surface-500 mt-1">Revenue, expenses, profitability & cost analysis</p>
         </div>
-        <div className="z-20">
-          <FluidDropdown
-            options={[
-              { value: '', label: 'All Departments' },
-              ...departments.map(d => ({ value: d.department_id, label: d.department_name }))
-            ]}
-            value={selectedDept}
-            onChange={(val) => { setSelectedDept(val); fetchData(val || undefined); }}
-            className="w-56"
-          />
+
+        <div className="flex items-center gap-3 flex-wrap">
+          {/* Period Selector */}
+          <div className="flex items-center gap-1 bg-surface-900/90 border border-surface-700/60 p-1 rounded-xl shadow-sm">
+            <div className="flex items-center gap-1.5 px-2 py-1 text-xs text-surface-400">
+              <Calendar className="w-3.5 h-3.5 text-primary-400" />
+              <span>Period:</span>
+            </div>
+            <div className="flex items-center gap-1 bg-surface-950/60 p-0.5 rounded-lg border border-surface-800">
+              {PERIOD_OPTIONS.map((p) => (
+                <button
+                  key={p.value}
+                  onClick={() => {
+                    setSelectedPeriod(p.value);
+                    fetchData(selectedDept, p.value);
+                  }}
+                  className={`px-3 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer ${
+                    selectedPeriod === p.value
+                      ? 'bg-primary-600 text-white shadow-sm shadow-primary-600/40'
+                      : 'text-surface-400 hover:text-surface-200 hover:bg-surface-800/80'
+                  }`}
+                >
+                  {p.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
+          {/* Department Filter */}
+          <div className="z-20">
+            <FluidDropdown
+              options={[
+                { value: '', label: 'All Departments' },
+                ...departments.map(d => ({ value: d.department_id, label: d.department_name }))
+              ]}
+              value={selectedDept}
+              onChange={(val) => {
+                setSelectedDept(val);
+                fetchData(val || undefined, selectedPeriod);
+              }}
+              className="w-52"
+            />
+          </div>
         </div>
       </div>
 

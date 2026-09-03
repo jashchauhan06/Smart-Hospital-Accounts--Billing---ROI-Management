@@ -13,10 +13,11 @@ router = APIRouter(prefix="/api/dashboard", tags=["Dashboard"])
 @router.get("/summary")
 def dashboard_summary(
     department_id: Optional[int] = Query(None),
+    months: int = Query(3, ge=1, le=12),
     db: Session = Depends(get_db),
 ):
     """Get complete dashboard summary with all KPIs."""
-    summary = get_dashboard_summary(db, department_id=department_id)
+    summary = get_dashboard_summary(db, department_id=department_id, months=months)
 
     # Add recent alerts
     alerts_q = db.query(Alert).filter(Alert.status == "active").order_by(Alert.created_at.desc()).limit(5)
@@ -55,7 +56,8 @@ def dashboard_summary(
 @router.get("/performance-score")
 def performance_score(
     department_id: Optional[int] = Query(None),
+    months: int = Query(3, ge=1, le=12),
     db: Session = Depends(get_db),
 ):
     """Get Hospital Performance Score (0-100) with component breakdown."""
-    return compute_performance_score(db, department_id=department_id)
+    return compute_performance_score(db, department_id=department_id, months=months)

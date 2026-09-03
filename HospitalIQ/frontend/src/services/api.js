@@ -19,8 +19,10 @@ api.interceptors.request.use((config) => {
 });
 
 // Helper: Match URL to Demo Data
-function getFallbackData(url = '', method = 'get', body = null) {
+function getFallbackData(url = '', method = 'get', body = null, params = null) {
   const cleanUrl = url.split('?')[0];
+  const monthsMatch = url.match(/[?&]months=(\d+)/);
+  const months = monthsMatch ? parseInt(monthsMatch[1]) : (params?.months || 3);
 
   // Auth
   if (cleanUrl.includes('/api/auth/login')) {
@@ -38,8 +40,8 @@ function getFallbackData(url = '', method = 'get', body = null) {
   }
 
   // Dashboard
-  if (cleanUrl.includes('/api/dashboard/summary')) return demo.demoDashboardSummary;
-  if (cleanUrl.includes('/api/dashboard/performance-score')) return demo.demoDashboardSummary.performance_score;
+  if (cleanUrl.includes('/api/dashboard/summary')) return demo.getDemoDashboardSummary(months);
+  if (cleanUrl.includes('/api/dashboard/performance-score')) return demo.getDemoDashboardSummary(months).performance_score;
 
   // Financial
   if (cleanUrl.includes('/api/financial/summary')) return demo.demoFinancialSummary;
@@ -163,7 +165,12 @@ api.interceptors.response.use(
     // Fall back smoothly to demo data so user gets a live experience
     const isNetworkError = !error.response || error.code === 'ECONNABORTED' || error.message?.includes('Network Error');
     if (isNetworkError) {
-      const fallback = getFallbackData(error.config?.url, error.config?.method, error.config?.data ? JSON.parse(error.config.data) : null);
+      const fallback = getFallbackData(
+        error.config?.url,
+        error.config?.method,
+        error.config?.data ? JSON.parse(error.config.data) : null,
+        error.config?.params
+      );
       if (fallback !== null) {
         console.warn(`[HospIntel Demo Mode] Backend unreachable at ${error.config?.url}. Serving cached/demo data.`);
         return Promise.resolve({ data: fallback, status: 200, statusText: 'OK (Demo Fallback)' });

@@ -8,25 +8,145 @@ export const demoUsers = {
   'clinical@hospintel.com': { id: 4, name: 'Dr. Ananya Iyer', email: 'clinical@hospintel.com', role: 'clinical_manager' },
 };
 
+export function getDemoDashboardSummary(months = 3) {
+  const m = parseInt(months) || 3;
+  if (m === 1) {
+    return {
+      performance_score: {
+        total_score: 90.3,
+        grade: 'A+',
+        components: [
+          { name: 'Financial Health', score: 98.2 },
+          { name: 'Operational Efficiency', score: 88.0 },
+          { name: 'Clinical Quality', score: 81.4 },
+          { name: 'Resource Utilization', score: 92.5 },
+          { name: 'Patient Experience', score: 91.0 },
+        ],
+      },
+      kpis: [
+        { label: 'Total Revenue', value: 25950980.74, formatted_value: '₹2.60 Cr', change_percent: -0.7, trend: 'down', unit: 'INR' },
+        { label: 'Total Expenses', value: 14948723.83, formatted_value: '₹1.49 Cr', change_percent: -0.1, trend: 'down', unit: 'INR' },
+        { label: 'Net Surplus', value: 11002256.91, formatted_value: '₹1.10 Cr', change_percent: -1.6, trend: 'down', unit: 'INR' },
+        { label: 'Overall ROI', value: 10.5, formatted_value: '10.5%', change_percent: 0.5, trend: 'up', unit: '%' },
+        { label: 'Total Patients', value: 1947, formatted_value: '1,947', change_percent: 118.3, trend: 'up', unit: '' },
+        { label: 'Bed Occupancy', value: 76.8, formatted_value: '76.8%', change_percent: 0.8, trend: 'up', unit: '%' },
+        { label: 'Avg Length of Stay', value: 4.3, formatted_value: '4.3 days', change_percent: -0.2, trend: 'down', unit: 'days' },
+        { label: 'Cost Per Patient', value: 7677.82, formatted_value: '₹7,678', change_percent: -54.2, trend: 'down', unit: 'INR' },
+      ],
+      revenue_trend: demoDashboardSummary.revenue_trend,
+      department_revenue: demoDashboardSummary.department_revenue,
+      recent_alerts: demoDashboardSummary.recent_alerts,
+      top_insights: demoDashboardSummary.top_insights,
+    };
+  } else if (m === 6) {
+    return {
+      performance_score: {
+        total_score: 88.4,
+        grade: 'A',
+        components: [
+          { name: 'Financial Health', score: 94.0 },
+          { name: 'Operational Efficiency', score: 86.5 },
+          { name: 'Clinical Quality', score: 80.0 },
+          { name: 'Resource Utilization', score: 89.0 },
+          { name: 'Patient Experience', score: 92.5 },
+        ],
+      },
+      kpis: [
+        { label: 'Total Revenue', value: 156616620.99, formatted_value: '₹15.66 Cr', change_percent: 0.5, trend: 'up', unit: 'INR' },
+        { label: 'Total Expenses', value: 87576476.88, formatted_value: '₹8.76 Cr', change_percent: 5.9, trend: 'up', unit: 'INR' },
+        { label: 'Net Surplus', value: 69040144.11, formatted_value: '₹6.90 Cr', change_percent: -5.7, trend: 'down', unit: 'INR' },
+        { label: 'Overall ROI', value: 63.1, formatted_value: '63.1%', change_percent: 3.2, trend: 'up', unit: '%' },
+        { label: 'Total Patients', value: 6640, formatted_value: '6,640', change_percent: 34.4, trend: 'up', unit: '' },
+        { label: 'Bed Occupancy', value: 77.2, formatted_value: '77.2%', change_percent: 1.2, trend: 'up', unit: '%' },
+        { label: 'Avg Length of Stay', value: 4.2, formatted_value: '4.2 days', change_percent: -0.5, trend: 'down', unit: 'days' },
+        { label: 'Cost Per Patient', value: 13189.23, formatted_value: '₹13,189', change_percent: -21.2, trend: 'down', unit: 'INR' },
+      ],
+      revenue_trend: demoDashboardSummary.revenue_trend,
+      department_revenue: demoDashboardSummary.department_revenue,
+      recent_alerts: demoDashboardSummary.recent_alerts,
+      top_insights: demoDashboardSummary.top_insights,
+    };
+  } else if (m === 12) {
+    return {
+      performance_score: {
+        total_score: 86.8,
+        grade: 'A',
+        components: [
+          { name: 'Financial Health', score: 92.0 },
+          { name: 'Operational Efficiency', score: 85.0 },
+          { name: 'Clinical Quality', score: 79.5 },
+          { name: 'Resource Utilization', score: 87.0 },
+          { name: 'Patient Experience', score: 90.5 },
+        ],
+      },
+      kpis: [
+        { label: 'Total Revenue', value: 312500881.24, formatted_value: '₹31.25 Cr', change_percent: 8.7, trend: 'up', unit: 'INR' },
+        { label: 'Total Expenses', value: 170246347.16, formatted_value: '₹17.02 Cr', change_percent: 6.4, trend: 'up', unit: 'INR' },
+        { label: 'Net Surplus', value: 142254534.08, formatted_value: '₹14.23 Cr', change_percent: 11.6, trend: 'up', unit: 'INR' },
+        { label: 'Overall ROI', value: 126.2, formatted_value: '126.2%', change_percent: 6.3, trend: 'up', unit: '%' },
+        { label: 'Total Patients', value: 11580, formatted_value: '11,580', change_percent: 15.2, trend: 'up', unit: '' },
+        { label: 'Bed Occupancy', value: 78.4, formatted_value: '78.4%', change_percent: 2.1, trend: 'up', unit: '%' },
+        { label: 'Avg Length of Stay', value: 4.1, formatted_value: '4.1 days', change_percent: -0.6, trend: 'down', unit: 'days' },
+        { label: 'Cost Per Patient', value: 14701.76, formatted_value: '₹14,702', change_percent: -8.5, trend: 'down', unit: 'INR' },
+      ],
+      revenue_trend: demoDashboardSummary.revenue_trend,
+      department_revenue: demoDashboardSummary.department_revenue,
+      recent_alerts: demoDashboardSummary.recent_alerts,
+      top_insights: demoDashboardSummary.top_insights,
+    };
+  }
+
+  // Default: 3 Months (Matches Screenshot)
+  return {
+    performance_score: {
+      total_score: 90.6,
+      grade: 'A+',
+      components: [
+        { name: 'Financial Health', score: 100 },
+        { name: 'Operational Efficiency', score: 87.5 },
+        { name: 'Clinical Quality', score: 78.8 },
+        { name: 'Resource Utilization', score: 93.0 },
+        { name: 'Patient Experience', score: 93.4 },
+      ],
+    },
+    kpis: [
+      { label: 'Total Revenue', value: 77534379.73, formatted_value: '₹7.75 Cr', change_percent: -2.0, trend: 'down', unit: 'INR' },
+      { label: 'Total Expenses', value: 44890030.88, formatted_value: '₹4.49 Cr', change_percent: 5.2, trend: 'up', unit: 'INR' },
+      { label: 'Net Surplus', value: 32644348.85, formatted_value: '₹3.26 Cr', change_percent: -10.3, trend: 'down', unit: 'INR' },
+      { label: 'Overall ROI', value: 31.5, formatted_value: '31.5%', change_percent: 1.6, trend: 'up', unit: '%' },
+      { label: 'Total Patients', value: 3776, formatted_value: '3,776', change_percent: 31.8, trend: 'up', unit: '' },
+      { label: 'Bed Occupancy', value: 75.6, formatted_value: '75.6%', change_percent: -0.1, trend: 'down', unit: '%' },
+      { label: 'Avg Length of Stay', value: 4.4, formatted_value: '4.4 days', change_percent: -0.4, trend: 'down', unit: 'days' },
+      { label: 'Cost Per Patient', value: 11888.25, formatted_value: '₹11,888', change_percent: -20.2, trend: 'down', unit: 'INR' },
+    ],
+    revenue_trend: demoDashboardSummary.revenue_trend,
+    department_revenue: demoDashboardSummary.department_revenue,
+    recent_alerts: demoDashboardSummary.recent_alerts,
+    top_insights: demoDashboardSummary.top_insights,
+  };
+}
+
 export const demoDashboardSummary = {
   performance_score: {
-    overall: 82.4,
-    financial: 78.5,
-    operational: 86.2,
-    clinical: 84.8,
-    satisfaction: 80.0,
-    status: 'Optimal',
-    trend: '+3.2%',
+    total_score: 90.6,
+    grade: 'A+',
+    components: [
+      { name: 'Financial Health', score: 100 },
+      { name: 'Operational Efficiency', score: 87.5 },
+      { name: 'Clinical Quality', score: 78.8 },
+      { name: 'Resource Utilization', score: 93.0 },
+      { name: 'Patient Experience', score: 93.4 },
+    ],
   },
   kpis: [
-    { label: 'Total Revenue', value: 48625000, formatted: '₹4.86 Cr', change: '+8.4%', trend: 'up', subtext: 'vs last quarter' },
-    { label: 'Total Expenses', value: 39120000, formatted: '₹3.91 Cr', change: '+4.1%', trend: 'up', subtext: 'within budget target' },
-    { label: 'Net Surplus', value: 9505000, formatted: '₹95.0 L', change: '+18.2%', trend: 'up', subtext: '19.5% profit margin' },
-    { label: 'Overall ROI', value: 24.3, formatted: '24.3%', change: '+2.8%', trend: 'up', subtext: 'annualized return' },
-    { label: 'Total Patients', value: 14280, formatted: '14,280', change: '+6.5%', trend: 'up', subtext: 'inpatient & outpatient' },
-    { label: 'Bed Occupancy', value: 81.2, formatted: '81.2%', change: '+1.4%', trend: 'up', subtext: 'target: 80-85%' },
-    { label: 'Avg Length of Stay', value: 4.2, formatted: '4.2 days', change: '-0.3d', trend: 'down', subtext: 'improved discharge turnaround' },
-    { label: 'Cost Per Patient', value: 2739, formatted: '₹2,739', change: '-2.1%', trend: 'down', subtext: 'optimized procurement' },
+    { label: 'Total Revenue', value: 77534379.73, formatted_value: '₹7.75 Cr', change_percent: -2.0, trend: 'down', unit: 'INR' },
+    { label: 'Total Expenses', value: 44890030.88, formatted_value: '₹4.49 Cr', change_percent: 5.2, trend: 'up', unit: 'INR' },
+    { label: 'Net Surplus', value: 32644348.85, formatted_value: '₹3.26 Cr', change_percent: -10.3, trend: 'down', unit: 'INR' },
+    { label: 'Overall ROI', value: 31.5, formatted_value: '31.5%', change_percent: 1.6, trend: 'up', unit: '%' },
+    { label: 'Total Patients', value: 3776, formatted_value: '3,776', change_percent: 31.8, trend: 'up', unit: '' },
+    { label: 'Bed Occupancy', value: 75.6, formatted_value: '75.6%', change_percent: -0.1, trend: 'down', unit: '%' },
+    { label: 'Avg Length of Stay', value: 4.4, formatted_value: '4.4 days', change_percent: -0.4, trend: 'down', unit: 'days' },
+    { label: 'Cost Per Patient', value: 11888.25, formatted_value: '₹11,888', change_percent: -20.2, trend: 'down', unit: 'INR' },
   ],
   revenue_trend: [
     { month: 'Apr 2024', revenue: 3820000, expenses: 3100000, net_surplus: 720000 },
