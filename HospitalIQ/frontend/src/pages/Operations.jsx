@@ -3,7 +3,7 @@ import { operationsAPI } from '../services/api';
 import { Bed, Clock, Users, Activity, Wrench, Timer, TrendingUp, TrendingDown, Calendar } from 'lucide-react';
 import FluidDropdown from '../components/FluidDropdown';
 import {
-  AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
+  LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar
 } from 'recharts';
 
