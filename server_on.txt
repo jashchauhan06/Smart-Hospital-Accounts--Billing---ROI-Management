@@ -1,0 +1,5 @@
+# 1. Navigate to the frontend folder
+cd "j:\Smart Hospital Accounts, Billing & ROI Management\HospitalIQ\frontend"
+
+# 2. Start the Vite development server using Node
+node node_modules/vite/bin/vite.js

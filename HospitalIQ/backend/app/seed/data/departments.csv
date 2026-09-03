@@ -1,0 +1,9 @@
+id,name,description,bed_capacity
+1,Cardiology,"Cardiovascular diagnosis, treatment and surgery",60
+2,Orthopedics,Musculoskeletal system treatment and surgery,45
+3,Neurology,Nervous system disorders diagnosis and treatment,35
+4,General Medicine,Primary care and internal medicine,80
+5,General Surgery,Surgical procedures and post-operative care,55
+6,Pediatrics,Child healthcare and neonatal care,40
+7,Emergency,Emergency and trauma care,30
+8,ICU,Intensive critical care unit,25

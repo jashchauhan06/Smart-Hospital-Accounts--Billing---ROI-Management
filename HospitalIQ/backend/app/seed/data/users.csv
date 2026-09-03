@@ -1,0 +1,5 @@
+id,name,email,password_hash,role,created_at
+1,Dr. Rajesh Kumar,admin@hospintel.com,$2b$12$QqnuZl.HH8tCy6QK.Of/VuXLUGqF/swvLVDnFaoCKkr1udGhFW2ee,admin,2026-09-02 14:58:54
+2,Priya Sharma,finance@hospintel.com,$2b$12$WX2tE23d.rhMSbOrI6M5W.bjnEV18.QtpGiqQEOXgZ0dkqCgDA3ne,finance_manager,2026-09-02 14:58:54
+3,Amit Patel,operations@hospintel.com,$2b$12$vVoLvPIMDo/Y0cLJ5hAcAegE.BCvwuZgCp3Y5nJHsppQ9GQOwO/Oy,operations_manager,2026-09-02 14:58:54
+4,Dr. Sneha Reddy,clinical@hospintel.com,$2b$12$PUPS2eGs5ieZ/bJ7waIdcOWWsBKW/BZr89gS6toQjMwg9HSLphRFu,clinical_manager,2026-09-02 14:58:54
