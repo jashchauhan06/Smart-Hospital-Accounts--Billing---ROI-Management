@@ -1,7 +1,12 @@
 {
-  "python.defaultInterpreterPath": "${workspaceFolder}/HospitalIQ/backend/venv/Scripts/python.exe",
+  "python.defaultInterpreterPath": "j:/Smart Hospital Accounts, Billing & ROI Management/HospitalIQ/backend/venv/Scripts/python.exe",
   "python.analysis.extraPaths": [
-    "${workspaceFolder}/HospitalIQ/backend"
+    "j:/Smart Hospital Accounts, Billing & ROI Management/HospitalIQ/backend",
+    "j:/Smart Hospital Accounts, Billing & ROI Management/HospitalIQ/backend/venv/Lib/site-packages"
+  ],
+  "python.autoComplete.extraPaths": [
+    "j:/Smart Hospital Accounts, Billing & ROI Management/HospitalIQ/backend",
+    "j:/Smart Hospital Accounts, Billing & ROI Management/HospitalIQ/backend/venv/Lib/site-packages"
   ],
   "python.terminal.activateEnvironment": true,
   "tailwindCSS.experimental.configFile": "${workspaceFolder}/HospitalIQ/frontend/tailwind.config.js",

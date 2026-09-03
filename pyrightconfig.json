@@ -1,0 +1,17 @@
+{
+  "venvPath": "HospitalIQ/backend",
+  "venv": "venv",
+  "extraPaths": [
+    "HospitalIQ/backend",
+    "HospitalIQ/backend/venv/Lib/site-packages"
+  ],
+  "executionEnvironments": [
+    {
+      "root": "HospitalIQ/backend",
+      "extraPaths": [
+        "HospitalIQ/backend",
+        "HospitalIQ/backend/venv/Lib/site-packages"
+      ]
+    }
+  ]
+}
