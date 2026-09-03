@@ -15,13 +15,17 @@ export function AuthProvider({ children }) {
     if (token) {
       authAPI.me()
         .then(res => {
-          setUser(res.data);
-          localStorage.setItem('hospintel_user', JSON.stringify(res.data));
+          if (res?.data) {
+            setUser(res.data);
+            localStorage.setItem('hospintel_user', JSON.stringify(res.data));
+          }
         })
-        .catch(() => {
-          localStorage.removeItem('hospintel_token');
-          localStorage.removeItem('hospintel_user');
-          setUser(null);
+        .catch((err) => {
+          if (err.response?.status === 401) {
+            localStorage.removeItem('hospintel_token');
+            localStorage.removeItem('hospintel_user');
+            setUser(null);
+          }
         })
         .finally(() => setLoading(false));
     } else {
