@@ -18,7 +18,10 @@ router = APIRouter(prefix="/api/departments", tags=["Departments"])
 
 
 @router.get("/")
-def list_departments(db: Session = Depends(get_db)):
+def list_departments(
+    months: int = Query(3, ge=1, le=12),
+    db: Session = Depends(get_db)
+):
     """Get all departments with performance summary for comparison table."""
     departments = db.query(Department).all()
     result = []
@@ -34,8 +37,8 @@ def list_departments(db: Session = Depends(get_db)):
             ClinicalQualityMetric.department_id == dept.id
         ).scalar()
 
-        # Financial totals (last 3 months)
-        period = timedelta(days=90)
+        # Financial totals for selected period
+        period = timedelta(days=months * 30)
         fin = db.query(
             func.sum(FinancialRecord.revenue),
             func.sum(FinancialRecord.expense),
@@ -67,7 +70,7 @@ def list_departments(db: Session = Depends(get_db)):
         ).first() if latest_clin else None
 
         # Performance score
-        perf = compute_performance_score(db, department_id=dept.id)
+        perf = compute_performance_score(db, department_id=dept.id, months=months)
 
         result.append({
             "id": dept.id,

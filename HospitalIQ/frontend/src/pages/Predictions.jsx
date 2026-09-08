@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react';
 import { predictionsAPI } from '../services/api';
 import { BrainCircuit, TrendingUp, TrendingDown, Users, DollarSign, Bed, UserCheck, AlertTriangle } from 'lucide-react';
+import PeriodSelector from '../components/PeriodSelector';
+import { usePeriod } from '../context/PeriodContext';
 import { AreaChart, Area, LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
 const formatINR = (v) => {
@@ -10,6 +12,7 @@ const formatINR = (v) => {
 };
 
 export default function Predictions() {
+  const { selectedPeriod, setSelectedPeriod } = usePeriod();
   const [volumeForecast, setVolumeForecast] = useState(null);
   const [costForecast, setCostForecast] = useState(null);
   const [resourceDemand, setResourceDemand] = useState(null);
@@ -18,17 +21,17 @@ export default function Predictions() {
 
   useEffect(() => {
     Promise.all([
-      predictionsAPI.patientVolume(),
-      predictionsAPI.cost(),
-      predictionsAPI.resourceDemand(),
-      predictionsAPI.list(),
+      predictionsAPI.patientVolume({ months: selectedPeriod }),
+      predictionsAPI.cost({ months: selectedPeriod }),
+      predictionsAPI.resourceDemand({ months: selectedPeriod }),
+      predictionsAPI.list({ months: selectedPeriod }),
     ]).then(([vol, cost, res, dept]) => {
       setVolumeForecast(vol.data);
       setCostForecast(cost.data);
       setResourceDemand(res.data);
       setDeptPredictions(dept.data);
     }).catch(console.error).finally(() => setLoading(false));
-  }, []);
+  }, [selectedPeriod]);
 
   if (loading) return <div className="page-container"><div className="animate-pulse h-96 bg-surface-900 rounded-xl" /></div>;
 
@@ -44,9 +47,12 @@ export default function Predictions() {
 
   return (
     <div className="page-container">
-      <div>
-        <h1 className="text-2xl font-bold text-surface-100">Predictive Analytics</h1>
-        <p className="text-sm text-surface-500 mt-1">ML-powered forecasts for patient volume, costs & resource demand</p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
+        <div>
+          <h1 className="text-2xl font-bold text-surface-100">Predictive Analytics</h1>
+          <p className="text-sm text-surface-500 mt-1">ML-powered forecasts for patient volume, costs & resource demand</p>
+        </div>
+        <PeriodSelector value={selectedPeriod} onChange={setSelectedPeriod} />
       </div>
 
       {/* Model Disclaimer */}

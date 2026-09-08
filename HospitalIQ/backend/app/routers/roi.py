@@ -9,9 +9,12 @@ router = APIRouter(prefix="/api/roi", tags=["ROI Analysis"])
 
 
 @router.get("/summary")
-def roi_summary(db: Session = Depends(get_db)):
+def roi_summary(
+    department_id: Optional[int] = Query(None),
+    db: Session = Depends(get_db)
+):
     """Get overall ROI summary with category and department breakdowns."""
-    return get_roi_summary(db)
+    return get_roi_summary(db, department_id=department_id)
 
 
 @router.get("/why-changed")

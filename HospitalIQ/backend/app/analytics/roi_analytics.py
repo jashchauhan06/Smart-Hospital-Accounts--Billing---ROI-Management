@@ -15,15 +15,18 @@ from datetime import date
 from app.models import Investment, Department, FinancialRecord, OperationalMetric
 
 
-def get_roi_summary(db: Session):
-    """Compute overall ROI summary with category and department breakdowns."""
-    investments = db.query(Investment).all()
+def get_roi_summary(db: Session, department_id: int = None):
+    """Compute overall or department-specific ROI summary with category and department breakdowns."""
+    q = db.query(Investment)
+    if department_id:
+        q = q.filter(Investment.department_id == department_id)
+    investments = q.all()
 
     if not investments:
         return {"total_investment": 0, "total_revenue_generated": 0,
                 "total_operating_cost": 0, "overall_roi": 0,
                 "best_performing": None, "worst_performing": None,
-                "by_category": [], "by_department": []}
+                "by_category": [], "by_department": [], "investments": []}
 
     total_investment = 0
     total_revenue = 0

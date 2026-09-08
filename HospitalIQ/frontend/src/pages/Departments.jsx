@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { departmentsAPI } from '../services/api';
 import { Building2, ArrowUpDown, ChevronRight, TrendingUp, TrendingDown } from 'lucide-react';
+import PeriodSelector from '../components/PeriodSelector';
+import { usePeriod } from '../context/PeriodContext';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
 const formatINR = (v) => {
@@ -11,6 +13,7 @@ const formatINR = (v) => {
 };
 
 export default function Departments() {
+  const { selectedPeriod, setSelectedPeriod } = usePeriod();
   const [departments, setDepartments] = useState([]);
   const [selectedDept, setSelectedDept] = useState(null);
   const [deptDetail, setDeptDetail] = useState(null);
@@ -19,10 +22,17 @@ export default function Departments() {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
+  const fetchDepartments = (months = selectedPeriod) => {
+    setLoading(true);
+    departmentsAPI.list({ months })
+      .then(res => setDepartments(res.data || []))
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  };
+
   useEffect(() => {
-    departmentsAPI.list().then(res => setDepartments(res.data))
-      .catch(console.error).finally(() => setLoading(false));
-  }, []);
+    fetchDepartments(selectedPeriod);
+  }, [selectedPeriod]);
 
   useEffect(() => {
     if (selectedDept) {
@@ -50,12 +60,17 @@ export default function Departments() {
     </th>
   );
 
-  if (loading) return <div className="page-container"><div className="animate-pulse h-96 bg-surface-900 rounded-xl" /></div>;
+  if (loading && !departments.length) return <div className="page-container"><div className="animate-pulse h-96 bg-surface-900 rounded-xl" /></div>;
 
   return (
     <div className="page-container">
-      <h1 className="text-2xl font-bold text-surface-100">Department Performance</h1>
-      <p className="text-sm text-surface-500 mt-1">Compare and analyze department performance metrics</p>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-2">
+        <div>
+          <h1 className="text-2xl font-bold text-surface-100">Department Performance</h1>
+          <p className="text-sm text-surface-500 mt-1">Compare and analyze department performance metrics</p>
+        </div>
+        <PeriodSelector value={selectedPeriod} onChange={setSelectedPeriod} />
+      </div>
 
       {/* Performance Score Chart */}
       <div className="chart-container">

@@ -2,24 +2,19 @@ import { useState, useEffect } from 'react';
 import { operationsAPI } from '../services/api';
 import { Bed, Clock, Users, Activity, Wrench, Timer, TrendingUp, TrendingDown, Calendar } from 'lucide-react';
 import FluidDropdown from '../components/FluidDropdown';
+import PeriodSelector from '../components/PeriodSelector';
+import { usePeriod } from '../context/PeriodContext';
 import {
   LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar
 } from 'recharts';
 
-const PERIOD_OPTIONS = [
-  { value: 1, label: '1 Month' },
-  { value: 3, label: '3 Months' },
-  { value: 6, label: '6 Months' },
-  { value: 12, label: '1 Year' },
-];
-
 export default function Operations() {
+  const { selectedPeriod, setSelectedPeriod } = usePeriod();
   const [summary, setSummary] = useState(null);
   const [trends, setTrends] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [selectedDept, setSelectedDept] = useState('');
-  const [selectedPeriod, setSelectedPeriod] = useState(3);
   const [loading, setLoading] = useState(true);
 
   const fetchData = (deptId = selectedDept, months = selectedPeriod) => {
@@ -39,7 +34,9 @@ export default function Operations() {
     }).catch(console.error).finally(() => setLoading(false));
   };
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => { 
+    fetchData(selectedDept, selectedPeriod); 
+  }, [selectedDept, selectedPeriod]);
 
   if (loading && !summary) return <div className="page-container"><div className="animate-pulse h-96 bg-surface-900 rounded-xl" /></div>;
 
@@ -61,31 +58,8 @@ export default function Operations() {
         </div>
 
         <div className="flex items-center gap-3 flex-wrap">
-          {/* Period Selector */}
-          <div className="flex items-center gap-1 bg-surface-900/90 border border-surface-700/60 p-1 rounded-xl shadow-sm">
-            <div className="flex items-center gap-1.5 px-2 py-1 text-xs text-surface-400">
-              <Calendar className="w-3.5 h-3.5 text-primary-400" />
-              <span>Period:</span>
-            </div>
-            <div className="flex items-center gap-1 bg-surface-950/60 p-0.5 rounded-lg border border-surface-800">
-              {PERIOD_OPTIONS.map((p) => (
-                <button
-                  key={p.value}
-                  onClick={() => {
-                    setSelectedPeriod(p.value);
-                    fetchData(selectedDept, p.value);
-                  }}
-                  className={`px-3 py-1 text-xs font-semibold rounded-md transition-all cursor-pointer ${
-                    selectedPeriod === p.value
-                      ? 'bg-primary-600 text-white shadow-sm shadow-primary-600/40'
-                      : 'text-surface-400 hover:text-surface-200 hover:bg-surface-800/80'
-                  }`}
-                >
-                  {p.label}
-                </button>
-              ))}
-            </div>
-          </div>
+          {/* Universal Period Selector */}
+          <PeriodSelector value={selectedPeriod} onChange={setSelectedPeriod} />
 
           {/* Department Filter */}
           <div className="z-20">

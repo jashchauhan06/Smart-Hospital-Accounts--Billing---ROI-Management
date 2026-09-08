@@ -4,6 +4,8 @@ import {
   TrendingUp, TrendingDown, Minus, AlertTriangle, Lightbulb,
   IndianRupee, Users, Bed, Clock, Activity, PieChart, Calendar
 } from 'lucide-react';
+import PeriodSelector from '../components/PeriodSelector';
+import { usePeriod } from '../context/PeriodContext';
 import {
   AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer,
   BarChart, Bar, RadialBarChart, RadialBar, Legend, PolarAngleAxis
@@ -34,10 +36,10 @@ const formatINR = (value) => {
 };
 
 export default function Dashboard() {
+  const { selectedPeriod, setSelectedPeriod } = usePeriod();
   const [data, setData] = useState(null);
   const [insights, setInsights] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [selectedPeriod, setSelectedPeriod] = useState(3);
   const [periodLoading, setPeriodLoading] = useState(false);
 
   const fetchDashboardData = (months, isInitial = false) => {
@@ -58,13 +60,12 @@ export default function Dashboard() {
   };
 
   useEffect(() => {
-    fetchDashboardData(selectedPeriod, true);
-  }, []);
+    fetchDashboardData(selectedPeriod, !data);
+  }, [selectedPeriod]);
 
   const handlePeriodChange = (months) => {
     if (months === selectedPeriod || periodLoading) return;
     setSelectedPeriod(months);
-    fetchDashboardData(months, false);
   };
 
   if (loading) return <LoadingState />;
@@ -81,29 +82,8 @@ export default function Dashboard() {
           <p className="text-sm text-surface-500 mt-1">Hospital performance overview & key metrics</p>
         </div>
 
-        {/* Time Period Filter Pill Buttons */}
-        <div className="flex items-center gap-1.5 self-start sm:self-auto bg-surface-900/90 border border-surface-700/60 p-1.5 rounded-xl shadow-sm backdrop-blur-sm">
-          <div className="flex items-center gap-1.5 px-2.5 py-1 text-xs font-medium text-surface-400">
-            <Calendar className="w-3.5 h-3.5 text-primary-400" />
-            <span className="font-semibold text-surface-300">Period:</span>
-          </div>
-          <div className="flex items-center gap-1 bg-surface-950/60 p-0.5 rounded-lg border border-surface-800">
-            {PERIOD_OPTIONS.map((opt) => (
-              <button
-                key={opt.value}
-                onClick={() => handlePeriodChange(opt.value)}
-                disabled={periodLoading}
-                className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-all duration-200 cursor-pointer ${
-                  selectedPeriod === opt.value
-                    ? 'bg-primary-600 text-white shadow-sm shadow-primary-600/40'
-                    : 'text-surface-400 hover:text-surface-200 hover:bg-surface-800/80'
-                }`}
-              >
-                {opt.label}
-              </button>
-            ))}
-          </div>
-        </div>
+        {/* Time Period Filter Component */}
+        <PeriodSelector value={selectedPeriod} onChange={handlePeriodChange} />
       </div>
 
       {/* Cards Section Meta Info */}

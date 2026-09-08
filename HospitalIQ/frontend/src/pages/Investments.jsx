@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { investmentsAPI } from '../services/api';
 import { Landmark, TrendingUp, TrendingDown, ExternalLink } from 'lucide-react';
 import FluidDropdown from '../components/FluidDropdown';
+import PeriodSelector from '../components/PeriodSelector';
+import { usePeriod } from '../context/PeriodContext';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line } from 'recharts';
 
 const formatINR = (v) => {
@@ -11,6 +13,7 @@ const formatINR = (v) => {
 };
 
 export default function Investments() {
+  const { selectedPeriod, setSelectedPeriod } = usePeriod();
   const [investments, setInvestments] = useState([]);
   const [selectedInv, setSelectedInv] = useState(null);
   const [invDetail, setInvDetail] = useState(null);
@@ -35,21 +38,24 @@ export default function Investments() {
 
   return (
     <div className="page-container">
-      <div className="flex items-center justify-between flex-wrap gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-bold text-surface-100">Investment Tracking</h1>
           <p className="text-sm text-surface-500 mt-1">Infrastructure investments, utilization & ROI analysis</p>
         </div>
-        <div className="z-20">
-          <FluidDropdown
-            options={[
-              { value: '', label: 'All Categories' },
-              ...categories.map(c => ({ value: c, label: c.charAt(0).toUpperCase() + c.slice(1) }))
-            ]}
-            value={filterCat}
-            onChange={setFilterCat}
-            className="w-56"
-          />
+        <div className="flex flex-wrap items-center gap-3 self-start sm:self-auto">
+          <PeriodSelector value={selectedPeriod} onChange={setSelectedPeriod} />
+          <div className="z-20">
+            <FluidDropdown
+              options={[
+                { value: '', label: 'All Categories' },
+                ...categories.map(c => ({ value: c, label: c.charAt(0).toUpperCase() + c.slice(1) }))
+              ]}
+              value={filterCat}
+              onChange={setFilterCat}
+              className="w-56"
+            />
+          </div>
         </div>
       </div>
 

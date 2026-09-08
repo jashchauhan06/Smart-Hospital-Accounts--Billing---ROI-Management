@@ -219,19 +219,213 @@ export const demoInvestments = [
   { id: 5, title: 'Stryker Mako Robotic Joint System', department: 'Orthopedics', cost: 16000000, annual_revenue: 10200000, maintenance_cost: 1750000, payback_years: 5.8, roi_percentage: -33.2, status: 'Under-utilized', purchase_date: '2023-09-01' },
 ];
 
-export const demoROISummary = {
-  overall_roi: 24.3,
-  total_investments_value: 92200000,
-  net_annual_return: 22405000,
-  best_performing: { name: 'Cardiology Cath Lab', roi: 42.0 },
-  lowest_performing: { name: 'Orthopedics Robotic Arm', roi: -33.2 },
-  factors: [
-    { factor: 'Procedure Volume Surge', impact: '+6.2%', description: 'High demand for cardiac interventional procedures' },
-    { factor: 'Robotics Under-utilization', impact: '-4.8%', description: 'Orthopedic surgeon certification bottleneck in Q3' },
-    { factor: 'Consumables Renegotiation', impact: '+2.1%', description: 'Direct API bulk procurement savings' },
-    { factor: 'Energy Tariff Increase', impact: '-0.7%', description: 'Power grid rate adjustments' },
-  ],
+export const DEPARTMENT_ROI_MAP = {
+  1: {
+    name: 'Cardiology',
+    total_investment: 36500000,
+    total_revenue_generated: 67300000,
+    total_operating_cost: 29400000,
+    overall_roi: 103.8,
+    best_performing: { name: 'ECG Monitoring System', roi: 131.4, department: 'Cardiology' },
+    worst_performing: { name: 'Cardiac Rehab Center', roi: 78.8, department: 'Cardiology' },
+    investments: [
+      { id: 2, name: 'ECG Monitoring System', roi: 131.4, department: 'Cardiology' },
+      { id: 1, name: 'Cardiac Catheterization Lab', roi: 108.0, department: 'Cardiology' },
+      { id: 3, name: 'Cardiac Rehab Center', roi: 78.8, department: 'Cardiology' },
+    ]
+  },
+  2: {
+    name: 'Orthopedics',
+    total_investment: 40000000,
+    total_revenue_generated: 41520000,
+    total_operating_cost: 28980000,
+    overall_roi: 31.4,
+    best_performing: { name: 'Digital X-Ray Suite', roi: 76.8, department: 'Orthopedics' },
+    worst_performing: { name: 'Robotic Surgery System', roi: 24.9, department: 'Orthopedics' },
+    investments: [
+      { id: 7, name: 'Digital X-Ray Suite', roi: 76.8, department: 'Orthopedics' },
+      { id: 6, name: 'Robotic Surgery System', roi: 24.9, department: 'Orthopedics' },
+    ]
+  },
+  3: {
+    name: 'Neurology',
+    total_investment: 46000000,
+    total_revenue_generated: 56280000,
+    total_operating_cost: 28670000,
+    overall_roi: 60.0,
+    best_performing: { name: 'EEG Monitoring Lab', roi: 80.8, department: 'Neurology' },
+    worst_performing: { name: 'Stroke Treatment Unit', roi: 28.2, department: 'Neurology' },
+    investments: [
+      { id: 17, name: 'EEG Monitoring Lab', roi: 80.8, department: 'Neurology' },
+      { id: 16, name: '3T MRI Scanner', roi: 70.0, department: 'Neurology' },
+      { id: 18, name: 'Stroke Treatment Unit', roi: 28.2, department: 'Neurology' },
+    ]
+  },
+  4: {
+    name: 'General Medicine',
+    total_investment: 21000000,
+    total_revenue_generated: 26550000,
+    total_operating_cost: 14000000,
+    overall_roi: 59.8,
+    best_performing: { name: 'Automated Lab Equipment', roi: 62.5, department: 'General Medicine' },
+    worst_performing: { name: 'Dialysis Center Expansion', roi: 58.7, department: 'General Medicine' },
+    investments: [
+      { id: 11, name: 'Automated Lab Equipment', roi: 62.5, department: 'General Medicine' },
+      { id: 10, name: 'Dialysis Center Expansion', roi: 58.7, department: 'General Medicine' },
+    ]
+  },
+  5: {
+    name: 'General Surgery',
+    total_investment: 48000000,
+    total_revenue_generated: 56200000,
+    total_operating_cost: 30900000,
+    overall_roi: 52.7,
+    best_performing: { name: 'Laparoscopic Suite', roi: 104.0, department: 'General Surgery' },
+    worst_performing: { name: 'Surgical Robot Arm', roi: 16.1, department: 'General Surgery' },
+    investments: [
+      { id: 12, name: 'Laparoscopic Suite', roi: 104.0, department: 'General Surgery' },
+      { id: 13, name: 'Surgical Robot Arm', roi: 16.1, department: 'General Surgery' },
+    ]
+  },
+  6: {
+    name: 'Pediatrics',
+    total_investment: 17000000,
+    total_revenue_generated: 16320000,
+    total_operating_cost: 10080000,
+    overall_roi: 36.7,
+    best_performing: { name: 'Neonatal ICU Upgrade', roi: 40.0, department: 'Pediatrics' },
+    worst_performing: { name: 'Pediatric Imaging Suite', roi: 32.0, department: 'Pediatrics' },
+    investments: [
+      { id: 14, name: 'Neonatal ICU Upgrade', roi: 40.0, department: 'Pediatrics' },
+      { id: 15, name: 'Pediatric Imaging Suite', roi: 32.0, department: 'Pediatrics' },
+    ]
+  },
+  7: {
+    name: 'Emergency',
+    total_investment: 16500000,
+    total_revenue_generated: 26920000,
+    total_operating_cost: 13650000,
+    overall_roi: 80.4,
+    best_performing: { name: 'Advanced Trauma Equipment', roi: 90.0, department: 'Emergency' },
+    worst_performing: { name: 'Emergency Triage System', roi: 54.9, department: 'Emergency' },
+    investments: [
+      { id: 4, name: 'Advanced Trauma Equipment', roi: 90.0, department: 'Emergency' },
+      { id: 5, name: 'Emergency Triage System', roi: 54.9, department: 'Emergency' },
+    ]
+  },
+  8: {
+    name: 'ICU',
+    total_investment: 26500000,
+    total_revenue_generated: 35660000,
+    total_operating_cost: 21010000,
+    overall_roi: 55.3,
+    best_performing: { name: 'Advanced Ventilator Fleet', roi: 62.5, department: 'ICU' },
+    worst_performing: { name: 'Patient Monitoring Network', roi: 40.0, department: 'ICU' },
+    investments: [
+      { id: 8, name: 'Advanced Ventilator Fleet', roi: 62.5, department: 'ICU' },
+      { id: 9, name: 'Patient Monitoring Network', roi: 40.0, department: 'ICU' },
+    ]
+  },
 };
+
+export const HOSPITAL_ROI_SUMMARY = {
+  total_investment: 251500000.0,
+  total_revenue_generated: 326750000.0,
+  total_operating_cost: 176690000.0,
+  overall_roi: 59.7,
+  best_performing: { name: 'ECG Monitoring System', roi: 131.4, department: 'Cardiology' },
+  worst_performing: { name: 'Surgical Robot Arm', roi: 16.1, department: 'General Surgery' },
+  by_department: [
+    { department: 'Cardiology', department_id: 1, roi: 103.8, investment: 36500000, revenue: 67300000 },
+    { department: 'Emergency', department_id: 7, roi: 80.4, investment: 16500000, revenue: 26920000 },
+    { department: 'Neurology', department_id: 3, roi: 60.0, investment: 46000000, revenue: 56280000 },
+    { department: 'General Medicine', department_id: 4, roi: 59.8, investment: 21000000, revenue: 26550000 },
+    { department: 'ICU', department_id: 8, roi: 55.3, investment: 26500000, revenue: 35660000 },
+    { department: 'General Surgery', department_id: 5, roi: 52.7, investment: 48000000, revenue: 56200000 },
+    { department: 'Pediatrics', department_id: 6, roi: 36.7, investment: 17000000, revenue: 16320000 },
+    { department: 'Orthopedics', department_id: 2, roi: 31.4, investment: 40000000, revenue: 41520000 },
+  ],
+  investments: [
+    { id: 2, name: 'ECG Monitoring System', department: 'Cardiology', roi: 131.4 },
+    { id: 1, name: 'Cardiac Catheterization Lab', department: 'Cardiology', roi: 108.0 },
+    { id: 12, name: 'Laparoscopic Suite', department: 'General Surgery', roi: 104.0 },
+    { id: 4, name: 'Advanced Trauma Equipment', department: 'Emergency', roi: 90.0 },
+    { id: 17, name: 'EEG Monitoring Lab', department: 'Neurology', roi: 80.8 },
+    { id: 3, name: 'Cardiac Rehab Center', department: 'Cardiology', roi: 78.8 },
+    { id: 7, name: 'Digital X-Ray Suite', department: 'Orthopedics', roi: 76.8 },
+    { id: 16, name: '3T MRI Scanner', department: 'Neurology', roi: 70.0 },
+    { id: 8, name: 'Advanced Ventilator Fleet', department: 'ICU', roi: 62.5 },
+    { id: 11, name: 'Automated Lab Equipment', department: 'General Medicine', roi: 62.5 },
+    { id: 10, name: 'Dialysis Center Expansion', department: 'General Medicine', roi: 58.7 },
+    { id: 5, name: 'Emergency Triage System', department: 'Emergency', roi: 54.9 },
+    { id: 9, name: 'Patient Monitoring Network', department: 'ICU', roi: 40.0 },
+    { id: 14, name: 'Neonatal ICU Upgrade', department: 'Pediatrics', roi: 40.0 },
+    { id: 15, name: 'Pediatric Imaging Suite', department: 'Pediatrics', roi: 32.0 },
+    { id: 18, name: 'Stroke Treatment Unit', department: 'Neurology', roi: 28.2 },
+    { id: 6, name: 'Robotic Surgery System', department: 'Orthopedics', roi: 24.9 },
+    { id: 13, name: 'Surgical Robot Arm', department: 'General Surgery', roi: 16.1 },
+  ]
+};
+
+export const getDemoROISummary = (departmentId) => {
+  if (!departmentId) return HOSPITAL_ROI_SUMMARY;
+  const dept = DEPARTMENT_ROI_MAP[Number(departmentId)];
+  if (dept) {
+    return {
+      total_investment: dept.total_investment,
+      total_revenue_generated: dept.total_revenue_generated,
+      total_operating_cost: dept.total_operating_cost,
+      overall_roi: dept.overall_roi,
+      best_performing: dept.best_performing,
+      worst_performing: dept.worst_performing,
+      by_department: HOSPITAL_ROI_SUMMARY.by_department,
+      investments: dept.investments,
+    };
+  }
+  return HOSPITAL_ROI_SUMMARY;
+};
+
+export const getDemoWhyChanged = (departmentId) => {
+  const deptId = Number(departmentId);
+  if (deptId === 6) {
+    return {
+      entity_name: 'Pediatrics',
+      entity_type: 'Department',
+      current_roi: 36.7,
+      previous_roi: 26.9,
+      roi_change: 9.8,
+      factors: [
+        { factor: 'Revenue Change', impact: 4.2, direction: 'positive', description: 'Outpatient pediatric consultations up 14%' },
+        { factor: 'Neonatal ICU Utilization', impact: 3.5, direction: 'positive', description: 'NICU bed occupancy reached 82% efficiency' },
+        { factor: 'Equipment Maintenance', impact: -1.2, direction: 'negative', description: 'Annual incubator calibration servicing' },
+        { factor: 'Patient Throughput', impact: 2.1, direction: 'positive', description: 'Vaccination and seasonal intake grew' },
+        { factor: 'Staff Efficiency', impact: 1.2, direction: 'positive', description: 'Pediatric nursing coverage optimized' },
+      ],
+      ai_insight: 'Pediatrics demonstrated a +9.8% ROI gain driven by improved Neonatal ICU utilization and higher seasonal outpatient throughput.',
+      suggested_action: 'Expand specialized pediatric day-care beds to further reduce NICU overflow and maintain high margin services.',
+    };
+  }
+  const deptName = DEPARTMENT_ROI_MAP[deptId]?.name || 'Hospital Overall';
+  const currentRoi = DEPARTMENT_ROI_MAP[deptId]?.overall_roi || 59.7;
+  return {
+    entity_name: deptName,
+    entity_type: departmentId ? 'Department' : 'Hospital-wide',
+    current_roi: currentRoi,
+    previous_roi: Math.round((currentRoi - 3.2) * 10) / 10,
+    roi_change: 3.2,
+    factors: [
+      { factor: 'Procedure Volume Growth', impact: 4.8, direction: 'positive', description: 'Surgical and diagnostic procedures increased' },
+      { factor: 'Equipment Utilization', impact: 2.3, direction: 'positive', description: 'Diagnostic asset run-times at 78% target' },
+      { factor: 'Consumables Renegotiation', impact: 1.6, direction: 'positive', description: 'Direct supply chain savings' },
+      { factor: 'Operating Cost Inflation', impact: -2.1, direction: 'negative', description: 'Rising energy and pharmaceutical utility prices' },
+      { factor: 'Staff Efficiency', impact: 1.1, direction: 'positive', description: 'Clinical workforce scheduling optimized' },
+    ],
+    ai_insight: `${deptName} maintains solid capital productivity with positive operational leverage across core equipment assets.`,
+    suggested_action: 'Continue monitoring equipment utilization rates and negotiate multi-year service contracts to protect margins.',
+  };
+};
+
+export const demoROISummary = HOSPITAL_ROI_SUMMARY;
 
 export const demoPredictions = {
   patient_volume: [

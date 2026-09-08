@@ -21,8 +21,11 @@ api.interceptors.request.use((config) => {
 // Helper: Match URL to Demo Data
 function getFallbackData(url = '', method = 'get', body = null, params = null) {
   const cleanUrl = url.split('?')[0];
+  const urlParams = new URLSearchParams(url.split('?')[1] || '');
   const monthsMatch = url.match(/[?&]months=(\d+)/);
   const months = monthsMatch ? parseInt(monthsMatch[1]) : (params?.months || 3);
+  const deptMatch = url.match(/[?&]department_id=(\d+)/);
+  const deptId = deptMatch ? parseInt(deptMatch[1]) : (params?.department_id || null);
 
   // Auth
   if (cleanUrl.includes('/api/auth/login')) {
@@ -119,10 +122,11 @@ function getFallbackData(url = '', method = 'get', body = null, params = null) {
   if (cleanUrl.includes('/api/investments')) return demo.demoInvestments;
 
   // ROI
-  if (cleanUrl.includes('/api/roi/summary')) return demo.demoROISummary;
-  if (cleanUrl.includes('/api/roi/why-changed')) return demo.demoROISummary;
+  if (cleanUrl.includes('/api/roi/summary')) return demo.getDemoROISummary ? demo.getDemoROISummary(deptId) : demo.demoROISummary;
+  if (cleanUrl.includes('/api/roi/why-changed')) return demo.getDemoWhyChanged ? demo.getDemoWhyChanged(deptId) : demo.demoROISummary;
   if (cleanUrl.match(/\/api\/roi\/department\/\d+/)) {
-    return {
+    const dId = cleanUrl.match(/\/api\/roi\/department\/(\d+)/)?.[1];
+    return demo.getDemoWhyChanged ? demo.getDemoWhyChanged(dId) : {
       department: demo.demoDepartments[0],
       roi: 42.0,
       factors: demo.demoROISummary.factors,
@@ -218,7 +222,7 @@ export const clinicalAPI = {
 
 // Departments
 export const departmentsAPI = {
-  list: () => api.get('/api/departments'),
+  list: (params) => api.get('/api/departments', { params }),
   performance: (id) => api.get(`/api/departments/${id}/performance`),
 };
 
@@ -231,7 +235,7 @@ export const investmentsAPI = {
 
 // ROI
 export const roiAPI = {
-  summary: () => api.get('/api/roi/summary'),
+  summary: (params) => api.get('/api/roi/summary', { params }),
   whyChanged: (params) => api.get('/api/roi/why-changed', { params }),
   department: (id) => api.get(`/api/roi/department/${id}`),
 };

@@ -2,18 +2,24 @@ import { useState, useEffect } from 'react';
 import { clinicalAPI } from '../services/api';
 import { HeartPulse, TrendingUp, TrendingDown, Smile, ShieldAlert, Repeat, Skull } from 'lucide-react';
 import FluidDropdown from '../components/FluidDropdown';
+import PeriodSelector from '../components/PeriodSelector';
+import { usePeriod } from '../context/PeriodContext';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, BarChart, Bar } from 'recharts';
 
 export default function Clinical() {
+  const { selectedPeriod, setSelectedPeriod } = usePeriod();
   const [summary, setSummary] = useState(null);
   const [trends, setTrends] = useState([]);
   const [departments, setDepartments] = useState([]);
   const [selectedDept, setSelectedDept] = useState('');
   const [loading, setLoading] = useState(true);
 
-  const fetchData = (deptId) => {
+  const fetchData = (deptId = selectedDept, months = selectedPeriod) => {
     setLoading(true);
-    const params = deptId ? { department_id: deptId } : {};
+    const params = {
+      ...(deptId ? { department_id: deptId } : {}),
+      months,
+    };
     Promise.all([
       clinicalAPI.summary(params),
       clinicalAPI.trends(params),
@@ -23,7 +29,9 @@ export default function Clinical() {
     }).catch(console.error).finally(() => setLoading(false));
   };
 
-  useEffect(() => { fetchData(); }, []);
+  useEffect(() => { 
+    fetchData(selectedDept, selectedPeriod); 
+  }, [selectedDept, selectedPeriod]);
 
   if (loading && !summary) return <div className="page-container"><div className="animate-pulse h-96 bg-surface-900 rounded-xl" /></div>;
 
@@ -37,21 +45,24 @@ export default function Clinical() {
 
   return (
     <div className="page-container">
-      <div className="flex items-center justify-between flex-wrap gap-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between flex-wrap gap-4">
         <div>
           <h1 className="text-2xl font-bold text-surface-100">Clinical & Quality Analytics</h1>
           <p className="text-sm text-surface-500 mt-1">Patient outcomes, safety indicators & satisfaction</p>
         </div>
-        <div className="z-20">
-          <FluidDropdown
-            options={[
-              { value: '', label: 'All Departments' },
-              ...departments.map(d => ({ value: d.department_id, label: d.department_name }))
-            ]}
-            value={selectedDept}
-            onChange={(val) => { setSelectedDept(val); fetchData(val || undefined); }}
-            className="w-56"
-          />
+        <div className="flex flex-wrap items-center gap-3 self-start sm:self-auto">
+          <PeriodSelector value={selectedPeriod} onChange={setSelectedPeriod} />
+          <div className="z-20">
+            <FluidDropdown
+              options={[
+                { value: '', label: 'All Departments' },
+                ...departments.map(d => ({ value: d.department_id, label: d.department_name }))
+              ]}
+              value={selectedDept}
+              onChange={(val) => setSelectedDept(val)}
+              className="w-56"
+            />
+          </div>
         </div>
       </div>
 
